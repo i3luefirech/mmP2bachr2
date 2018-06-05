@@ -19,7 +19,7 @@ In diesem Projekt wird ein "Proof of Concept" gemacht, ob die nötigen Informati
 Es wird versucht auf allen gängigen Betriebsystemen die globalen Mausevents abzufangen. Dabei wird sich auf wichtige Mausevents beschränkt wie Bewegung, links & Rechtsklick und das Mausrad
 
 ## Inhaltsverzeichnis
-- [Aufgabenstellung](http://github.com)
-- [Problemanalyse](http://github.com)
-- [Lösungsansatz](http://github.com)
-- [Fazit](http://github.com)
+- [Aufgabenstellung](https://github.com/i3luefirech/mmP2bachr2/wiki/Aufgabenstellung)
+- [Problemanalyse](https://github.com/i3luefirech/mmP2bachr2/wiki/Problemanalyse)
+- [Lösungsansatz](https://github.com/i3luefirech/mmP2bachr2/wiki/L%C3%B6sungsansatz)
+- [Fazit](https://github.com/i3luefirech/mmP2bachr2/wiki/Fazit)
