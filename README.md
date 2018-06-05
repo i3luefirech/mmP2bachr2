@@ -3,7 +3,7 @@ Multimouse - Proof of Concept - Projekt 2 - BFH - bachr2
 
 Student: Bachmann Rico - bachr2
 
-Betreuer: Andreas Danuser - TODO kürzel
+Betreuer: Andreas Danuser - dsa2
 
 Diese Seite im [Wiki](https://github.com/i3luefirech/mmP2bachr2/wiki)
 
@@ -15,7 +15,9 @@ Doch egal wie oft man die Bewegung wiederholt, der Mauszeiger auf dem Nachbarbil
 Nach kurzem Nachdenken bemerkt man, dass der Mauszeiger des Nachbarlaptops sich ja nicht bewegen kann, solange man die eigene Maus bewegt.
 Die Idee der Multimaus/Multimouse ist geboren
 
-TODO Bild Problemstellung
+![Problem](https://github.com/i3luefirech/mmP2bachr2/raw/master/doku/problem.PNG)
+
+![Lösung](https://github.com/i3luefirech/mmP2bachr2/raw/master/doku/l%C3%B6sung.PNG)
 
 In diesem Projekt wird ein "Proof of Concept" gemacht, ob die nötigen Informationen zur Umsetzung einer Multimouse vorhanden sind und ob es technisch möglich ist mehr als eine Maus zu rendern.
 Es wird versucht auf allen gängigen Betriebsystemen die globalen Mausevents abzufangen. Dabei wird sich auf wichtige Mausevents beschränkt wie Bewegung, links & Rechtsklick und das Mausrad
