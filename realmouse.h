@@ -18,7 +18,7 @@ public:
 
     void run();
 
-#ifdef __MINGW32__ || __MINGW64__
+#ifdef __MINGW32__
     void LowLevelMouse(int nCode, WPARAM wParam, LPARAM lParam);
 #endif  // end windows
 #ifdef __linux__
@@ -39,6 +39,18 @@ public:
     DWORD getTimestamp() const;
 
     void decrementOpenMousewheelActions(int amount, int direction);
+
+    void setpos(int x, int y);
+
+    void doleftclick();
+
+    void dorightclick();
+
+    void doscrollup();
+
+    void doscrolldown();
+
+    void gopos(int x, int y);
 };
 
 

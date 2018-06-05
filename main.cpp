@@ -14,7 +14,7 @@
 #define MOUSEFILE "/dev/input/mouse0"
 #endif  // end linux
 
-#ifdef __MINGW32__ || __MINGW64__
+#ifdef __MINGW32__
 #include <windows.h>
 #include <conio.h>
 #include <iostream>
@@ -24,11 +24,11 @@
 
 using namespace std;
 
-realmouse * Mainmouse = NULL;
+realmouse * Mainmouse = nullptr;
 
-#ifdef __MINGW32__ || __MINGW64__
-HINSTANCE hInst = NULL;
-HHOOK hook = NULL;
+#ifdef __MINGW32__
+HINSTANCE hInst = nullptr;
+HHOOK hook = nullptr;
 
 int WINAPI DllMain(HINSTANCE hInstance, DWORD reason, LPVOID reserved)
 {
@@ -37,6 +37,7 @@ int WINAPI DllMain(HINSTANCE hInstance, DWORD reason, LPVOID reserved)
         case DLL_PROCESS_ATTACH:
             hInst = hInstance;
             DisableThreadLibraryCalls(hInstance);
+        break;default:
             break;
     }
     return 1;
@@ -87,40 +88,56 @@ int main()
     // create realmouse object
     Mainmouse = new realmouse();
     // run realmouse object
-#ifdef __MINGW32__ || __MINGW64__
+#ifdef __MINGW32__
     DWORD threadId;
-    CloseHandle(CreateThread(NULL, 0, Thread, NULL, 0, &threadId));
+    CloseHandle(CreateThread(nullptr, 0, Thread, nullptr, 0, &threadId));
     while (!kbhit()){
         switch(count%1000000){
             case 0:
+                // Todo startposition
+                Mainmouse->setpos(0,0);
+                break;
+            case 50000:
                 // Todo leftclick
+                Mainmouse->doleftclick();
                 break;
             case 100000:
                 // Todo rightclick
+                Mainmouse->dorightclick();
                 break;
             case 200000:
                 // Todo scroll up
+                Mainmouse->doscrollup();
                 break;
             case 300000:
                 // Todo scroll down
+                Mainmouse->doscrolldown();
                 break;
             case 400000:
                 // Todo move mouse
+                Mainmouse->gopos(0,0);
                 break;
             case 500000:
                 // Todo move mouse
+                Mainmouse->gopos(0,0);
                 break;
             case 600000:
                 // Todo move mouse
+                Mainmouse->gopos(0,0);
                 break;
             case 700000:
                 // Todo move mouse
+                Mainmouse->gopos(0,0);
                 break;
             case 800000:
                 // Todo move mouse
+                Mainmouse->gopos(0,0);
                 break;
             case 900000:
                 // Todo move mouse
+                Mainmouse->gopos(0,0);
+                break;
+            default:
                 break;
         }
         if(Mainmouse->getMouswheel()<0) {

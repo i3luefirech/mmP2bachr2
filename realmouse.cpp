@@ -7,7 +7,7 @@
 #ifdef __linux__
 #endif  // end linux
 
-#ifdef __MINGW32__ || __MINGW64__
+#ifdef __MINGW32__
 #include <windows.h>
 #include <conio.h>
 #include <iostream>
@@ -59,9 +59,9 @@ DWORD realmouse::getTimestamp() const {
 }
 
 void realmouse::run() {
-#ifdef __MINGW32__ || __MINGW64__
+#ifdef __MINGW32__
     MSG msg;
-    while (0 < GetMessage(&msg, NULL, 0, 0)) {
+    while (0 < GetMessage(&msg, nullptr, 0, 0)) {
         DispatchMessage(&msg);
     }
 #endif  // end windows
@@ -74,7 +74,7 @@ void realmouse::run() {
     std::cout << "quitting now..." <<  std::endl;
 }
 
-#ifdef __MINGW32__ || __MINGW64__
+#ifdef __MINGW32__
 void realmouse::LowLevelMouse(int nCode, WPARAM wParam, LPARAM lParam) {
 
     MSLLHOOKSTRUCT * ptrlParam = (MSLLHOOKSTRUCT *)lParam;
@@ -113,6 +113,61 @@ void realmouse::LowLevelMouse(int nCode, WPARAM wParam, LPARAM lParam) {
             break;
     }
 }
+
+/**
+ * setpos<br>
+ * set the real cursor directly to this x/y position
+ *
+ * @param x int with x position
+ * @param y int with y position
+ */
+void realmouse::setpos(int x, int y) {
+
+}
+
+/**
+ * doleftclick<br>
+ * do a real left click at current cursor position
+ */
+void realmouse::doleftclick() {
+
+}
+
+/**
+ * dorightclick<br>
+ * do a real right click at current cursor position
+ */
+void realmouse::dorightclick() {
+
+}
+
+/**
+ * doleftclick<br>
+ * do a real scroll up at current cursor position
+ */
+void realmouse::doscrollup() {
+
+}
+
+/**
+ * doscrolldown<br>
+ * do a real scroll down at current cursor position
+ */
+void realmouse::doscrolldown() {
+
+}
+
+/**
+ * gopos<br>
+ * drive the real cursor this x/y position
+ *
+ * @param x int with x position
+ * @param y int with y position
+ */
+void realmouse::gopos(int x, int y) {
+
+}
+
 #endif  // end windows
 
 #ifdef __linux__
