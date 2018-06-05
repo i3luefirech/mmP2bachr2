@@ -5,6 +5,8 @@ Student: Bachmann Rico - bachr2
 
 Betreuer: Andreas Danuser - TODO kürzel
 
+Diese Seite im [Wiki](https://github.com/i3luefirech/mmP2bachr2/wiki)
+
 ## Einführung & Zusammenfassung
 Sie kennen das Problem. Man sitzt direkt nebeneinander, alle Personen an Ihrem Laptop.
 Dann will man seinem Laptopnachbar nur schnell zeigen wie etwas funktioniert.
