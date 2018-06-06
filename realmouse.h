@@ -5,6 +5,8 @@
 #ifndef MMP2BACHR2_MOUSE_H
 #define MMP2BACHR2_MOUSE_H
 
+#include <mutex>
+
 class realmouse {
 private:
     long xpos;
@@ -13,6 +15,7 @@ private:
     bool rightclick;
     short mousewheel;
     DWORD timestamp;
+    HCURSOR cursor;
 public:
     realmouse();
 
@@ -50,8 +53,18 @@ public:
 
     void doscrolldown();
 
-    void gopos(int x, int y);
-};
+    void gopos(int x, int y, int delta);
 
+    void dogopos(int x, int y, int delta);
+
+    bool isrunning();
+
+    static std::mutex mtx;
+
+    void GetDesktopResolution(int &horizontal, int &vertical);
+
+    void hiderealmouse(bool hide);
+};
+extern realmouse * Mainmouse;
 
 #endif //MMP2BACHR2_MOUSE_H

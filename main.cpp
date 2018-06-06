@@ -24,6 +24,12 @@
 
 using namespace std;
 
+struct xydelta {
+    int x;
+    int y;
+    int delta;
+};
+
 realmouse * Mainmouse = nullptr;
 
 #ifdef __MINGW32__
@@ -86,6 +92,27 @@ DWORD CALLBACK Thread(LPVOID pVoid)
     UnhookWindowsHookEx(hook);
     return 0;
 }
+
+/**
+ * Thread1 <br>
+ * callback function for threading.
+ * used for gopos
+ *
+ * @param pVoid
+ * @return
+ */
+DWORD CALLBACK Thread1(LPVOID pVoid)
+{
+    int x,y,delta;
+    xydelta *xyd = (xydelta*)pVoid;
+    x = xyd->x;
+    y = xyd->y;
+    delta = xyd->delta;
+    free(xyd);
+    cout << "soll -1 x: " << x << " y: " << y << endl;
+    Mainmouse->dogopos(x,y,delta);
+    return 0;
+}
 #endif  // end windows
 
 #ifdef __linux__
@@ -105,7 +132,7 @@ void *Thread(void *pVoid) {
 
     close(hook);
 
-    pthread_exit(NULL);
+    pthread_exit(nullptr);
 }
 #endif  // end linux
 
@@ -125,46 +152,10 @@ int main()
     Mainmouse = new realmouse();
     // run realmouse object
 #ifdef __MINGW32__
+    Sleep(5000);
     DWORD threadId;
     CloseHandle(CreateThread(nullptr, 0, Thread, nullptr, 0, &threadId));
     while (!kbhit()){
-        switch(count%1000000){
-            case 0:
-                Mainmouse->setpos(0,0);
-                break;
-            case 50000:
-                Mainmouse->doleftclick();
-                break;
-            case 100000:
-                Mainmouse->dorightclick();
-                break;
-            case 200000:
-                Mainmouse->doscrollup();
-                break;
-            case 300000:
-                Mainmouse->doscrolldown();
-                break;
-            case 400000:
-                Mainmouse->gopos(0,0);
-                break;
-            case 500000:
-                Mainmouse->gopos(0,0);
-                break;
-            case 600000:
-                Mainmouse->gopos(0,0);
-                break;
-            case 700000:
-                Mainmouse->gopos(0,0);
-                break;
-            case 800000:
-                Mainmouse->gopos(0,0);
-                break;
-            case 900000:
-                Mainmouse->gopos(0,0);
-                break;
-            default:
-                break;
-        }
         if(Mainmouse->getMouswheel()<0) {
             std::cout << "scroll down" << std::endl;
             Mainmouse->decrementOpenMousewheelActions(1,Mainmouse->getMouswheel());
@@ -172,7 +163,7 @@ int main()
             std::cout << "scroll up" << std::endl;
             Mainmouse->decrementOpenMousewheelActions(1,Mainmouse->getMouswheel());
         }
-        if(count%500000==0){
+        if(count%2500==0){
             std::cout << "Monitordata Mouse: (" << std::endl;
             std::cout << "x:" << Mainmouse->getXpos() << std::endl;
             std::cout << "y:" << Mainmouse->getYpos() << std::endl;
@@ -180,12 +171,62 @@ int main()
             std::cout << "rc:" << Mainmouse->isRightclick() << std::endl;
             std::cout << ")" << std::endl;
         }
+        int horizontal;
+        int vertical;
+        switch(count++){
+            case 0:
+                Mainmouse->GetDesktopResolution(horizontal, vertical);
+                std::cout << "setpos(" << horizontal/2 << "," << vertical/2 << ")" << std::endl;
+                Mainmouse->setpos(horizontal/2,vertical/2);
+                break;
+            case 500:
+                std::cout << "doleftclick()" << std::endl;
+                Mainmouse->doleftclick();
+                break;
+            case 1000:
+                std::cout << "dorightclick()" << std::endl;
+                Mainmouse->dorightclick();
+                break;
+            case 2000:
+                std::cout << "doscrollup()" << std::endl;
+                Mainmouse->setpos((horizontal/2)-50,vertical/2);
+                Mainmouse->doleftclick();
+                Mainmouse->doscrollup();
+                break;
+            case 3000:
+                std::cout << "doscrolldown()" << std::endl;
+                Mainmouse->doscrolldown();
+                break;
+            case 4000:
+                std::cout << "gopos(200,400,32)" << std::endl;
+                Mainmouse->gopos(200,400,8);
+                break;
+            case 8000:
+                std::cout << "gopos(600,550,32)" << std::endl;
+                Mainmouse->gopos(600,550,8);
+                break;
+            case 12000:
+                std::cout << "hiderealmouse(true)" << std::endl;
+                Mainmouse->hiderealmouse(true);
+                break;
+            case 14000:
+                std::cout << "hiderealmouse(false)" << std::endl;
+                Mainmouse->hiderealmouse(false);
+                break;
+            case 20000:
+                std::cout << "reset tests..." << std::endl;
+                count=0;
+                break;
+            default:
+                break;
+        }
+        Sleep(1);
     };
     PostThreadMessage(threadId, WM_QUIT, 0, 0);
     Sleep(1000);
 #endif  // end windows
 #ifdef __linux__
-    pthread_create(&threads[i], NULL, Thread, (void *)i);
+    pthread_create(&threads[i], nullptr, Thread, (void *)i);
 #endif  // end linux
     // free realmouse object
     free(Mainmouse);
