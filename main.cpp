@@ -30,6 +30,15 @@ realmouse * Mainmouse = nullptr;
 HINSTANCE hInst = nullptr;
 HHOOK hook = nullptr;
 
+/**
+ * DllMain <br>
+ * get HINSTANCE on DLL process attack message
+ *
+ * @param hInstance
+ * @param reason
+ * @param reserved
+ * @return
+ */
 int WINAPI DllMain(HINSTANCE hInstance, DWORD reason, LPVOID reserved)
 {
     switch (reason)
@@ -42,13 +51,31 @@ int WINAPI DllMain(HINSTANCE hInstance, DWORD reason, LPVOID reserved)
     }
     return 1;
 }
-
+/**
+ * LowLevelMouseProc<br>
+ * callback function which calls original function of the Mouse object
+ *
+ * @param nCode
+ * @param wParam
+ * @param lParam
+ * @return
+ */
 LRESULT CALLBACK LowLevelMouseProc(int nCode,WPARAM wParam,LPARAM lParam)
 {
     Mainmouse->LowLevelMouse(nCode,wParam,lParam);
     return (::CallNextHookEx(hook,nCode,wParam,lParam));
 }
 
+/**
+ * Thread <br>
+ * callback function for threading.
+ * Firsat load the mouseeventhook.
+ * 2nd run the Thread funtion.
+ * Unhook Mousevents when finished
+ *
+ * @param pVoid
+ * @return
+ */
 DWORD CALLBACK Thread(LPVOID pVoid)
 {
     // activate hook
@@ -82,6 +109,15 @@ void *Thread(void *pVoid) {
 }
 #endif  // end linux
 
+/**
+ * Main <br>
+ * Used for PoC.
+ * Creates Mouse Object.
+ * Creates needed thread.
+ * test code mouse functionality and print monitoring from real mouse.
+ *
+ * @return
+ */
 int main()
 {
     int count = 0;
@@ -94,56 +130,55 @@ int main()
     while (!kbhit()){
         switch(count%1000000){
             case 0:
-                // Todo startposition
                 Mainmouse->setpos(0,0);
                 break;
             case 50000:
-                // Todo leftclick
                 Mainmouse->doleftclick();
                 break;
             case 100000:
-                // Todo rightclick
                 Mainmouse->dorightclick();
                 break;
             case 200000:
-                // Todo scroll up
                 Mainmouse->doscrollup();
                 break;
             case 300000:
-                // Todo scroll down
                 Mainmouse->doscrolldown();
                 break;
             case 400000:
-                // Todo move mouse
                 Mainmouse->gopos(0,0);
                 break;
             case 500000:
-                // Todo move mouse
                 Mainmouse->gopos(0,0);
                 break;
             case 600000:
-                // Todo move mouse
                 Mainmouse->gopos(0,0);
                 break;
             case 700000:
-                // Todo move mouse
                 Mainmouse->gopos(0,0);
                 break;
             case 800000:
-                // Todo move mouse
                 Mainmouse->gopos(0,0);
                 break;
             case 900000:
-                // Todo move mouse
                 Mainmouse->gopos(0,0);
                 break;
             default:
                 break;
         }
         if(Mainmouse->getMouswheel()<0) {
+            std::cout << "scroll down" << std::endl;
             Mainmouse->decrementOpenMousewheelActions(1,Mainmouse->getMouswheel());
         } else if (Mainmouse->getMouswheel()>0) {
+            std::cout << "scroll up" << std::endl;
             Mainmouse->decrementOpenMousewheelActions(1,Mainmouse->getMouswheel());
+        }
+        if(count%500000==0){
+            std::cout << "Monitordata Mouse: (" << std::endl;
+            std::cout << "x:" << Mainmouse->getXpos() << std::endl;
+            std::cout << "y:" << Mainmouse->getYpos() << std::endl;
+            std::cout << "lc:" << Mainmouse->isLeftclick() << std::endl;
+            std::cout << "rc:" << Mainmouse->isRightclick() << std::endl;
+            std::cout << ")" << std::endl;
         }
     };
     PostThreadMessage(threadId, WM_QUIT, 0, 0);
