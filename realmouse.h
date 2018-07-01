@@ -6,6 +6,9 @@
 #define MMP2BACHR2_MOUSE_H
 
 #include <mutex>
+#ifdef __linux__
+#include <linux/input.h>
+#endif  // end linux
 
 class realmouse {
 private:
@@ -14,8 +17,14 @@ private:
     bool leftclick;
     bool rightclick;
     short mousewheel;
+#ifdef __MINGW32__
     DWORD timestamp;
     HCURSOR cursor;
+#endif  // end windows
+#ifdef __linux__
+    unsigned long timestamp;
+    int cursor;
+#endif  // end linux
 public:
     realmouse();
 
@@ -25,8 +34,7 @@ public:
     void LowLevelMouse(int nCode, WPARAM wParam, LPARAM lParam);
 #endif  // end windows
 #ifdef __linux__
-    void realmouse::LowLevelMouse(struct input_event ie) {
-}
+    void LowLevelMouse(struct input_event ie);
 #endif  // end linux
 
     long getXpos() const;
@@ -39,7 +47,12 @@ public:
 
     short getMouswheel() const;
 
+#ifdef __MINGW32__
     DWORD getTimestamp() const;
+#endif  // end windows
+#ifdef __linux__
+    unsigned long getTimestamp() const;
+#endif  // end windows
 
     void decrementOpenMousewheelActions(int amount, int direction);
 

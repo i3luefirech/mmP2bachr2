@@ -6,10 +6,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <pthread.h>
 
 #include <linux/input.h>
 #include <fcntl.h>
 #include <X11/Xlib.h>
+#include <iostream>
 
 #define MOUSEFILE "/dev/input/mouse0"
 #endif  // end linux
@@ -122,7 +124,7 @@ void *Thread(void *pVoid) {
 
     if((hook = open(MOUSEFILE, O_RDONLY)) == -1) {
         std::cout << "can not open mousefile..." <<  std::endl;
-        return -1;
+        return (void *)-1;
     }
 
     struct thread_data *my_data;
@@ -226,7 +228,7 @@ int main()
     Sleep(1000);
 #endif  // end windows
 #ifdef __linux__
-    pthread_create(&threads[i], nullptr, Thread, (void *)i);
+    pthread_create(reinterpret_cast<pthread_t *>(Thread), nullptr, Thread, (void *)0);
 #endif  // end linux
     // free realmouse object
     free(Mainmouse);

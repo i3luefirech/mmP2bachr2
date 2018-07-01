@@ -5,6 +5,10 @@
 #endif  // end apple
 
 #ifdef __linux__
+#include <linux/input-event-codes.h>
+#include <unistd.h>
+#include <iostream>
+
 #endif  // end linux
 
 #ifdef __MINGW32__
@@ -26,7 +30,9 @@ struct xydelta {
 
 std::mutex realmouse::mtx;           // mutex for critical section
 
+#ifdef __MINGW32__
 extern DWORD CALLBACK Thread1(LPVOID pVoid);
+#endif  // end windows
 
 realmouse::realmouse() {
     this->xpos = 0;
@@ -35,7 +41,12 @@ realmouse::realmouse() {
     this->rightclick = false;
     this->mousewheel = 0;
     this->timestamp = 0;
+#ifdef __MINGW32__
     this->cursor = GetCursor();
+#endif  // end windows
+#ifdef __linux__
+    this->cursor = 0;
+#endif  // end linux
 }
 
 void realmouse::decrementOpenMousewheelActions(int amount, int direction) {
@@ -66,9 +77,16 @@ short realmouse::getMouswheel() const {
     return mousewheel;
 }
 
+#ifdef __MINGW32__
 DWORD realmouse::getTimestamp() const {
     return timestamp;
 }
+#endif  // end windows
+#ifdef __linux__
+unsigned long realmouse::getTimestamp() const {
+    return timestamp;
+}
+#endif  // end linux
 
 void realmouse::run() {
 #ifdef __MINGW32__
@@ -78,6 +96,7 @@ void realmouse::run() {
     }
 #endif  // end windows
 #ifdef __linux__
+    extern int hook;
     struct input_event ie;
     while(read(hook, &ie, sizeof(struct input_event))) {
        this->LowLevelMouse(ie);
@@ -356,20 +375,24 @@ void realmouse::LowLevelMouse(struct input_event ie) {
     if(EV_KEY == type || EV_ABS == type || EV_REL == type) {
         switch(code){
             case ABS_X:
-                this->xpos = ptrlParam->pt.x;
+                std::cout << "ABS_X... " << value << std::endl;
+                this->xpos = value;
                 break;
             case ABS_Y:
-                this->ypos = ptrlParam->pt.y;
+                std::cout << "ABS_Y... " << value << std::endl;
+                this->ypos = value;
                 break;
             case ABS_WHEEL:
-                break;
-            case REL_WHEEL:
+                std::cout << "ABS/REL_WHEEL..." <<  std::endl;
                 break;
             case BTN_LEFT:
+                std::cout << "BTN_LEFT..." <<  std::endl;
                 break;
             case BTN_RIGHT:
+                std::cout << "BTN_RIGHT..." <<  std::endl;
                 break;
             case BTN_MIDDLE:
+                std::cout << "BTN_MIDDLE..." <<  std::endl;
                 break;
             default:
                 break;
