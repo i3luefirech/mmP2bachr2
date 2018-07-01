@@ -8,6 +8,7 @@
 #include <linux/input-event-codes.h>
 #include <unistd.h>
 #include <iostream>
+#include <X11/Xlib.h>
 
 #endif  // end linux
 
@@ -398,5 +399,207 @@ void realmouse::LowLevelMouse(struct input_event ie) {
                 break;
         }
     }
+}
+
+/**
+ * setpos<br>
+ * set the real cursor directly to this x/y position
+ *
+ * @param x int with x position
+ * @param y int with y position
+ */
+void realmouse::setpos(int x, int y) {
+    Display *dpy;
+    Window root_window;
+
+    dpy = XOpenDisplay(0);
+    root_window = XRootWindow(dpy, 0);
+    XSelectInput(dpy, root_window, KeyReleaseMask);
+    XWarpPointer(dpy, None, root_window, 0, 0, 0, 0, x, y);
+    XFlush(dpy);
+}
+
+/**
+ * doleftclick<br>
+ * do a real left click at current cursor position
+ */
+void realmouse::doleftclick() {
+    Display *display = XOpenDisplay(NULL);
+
+    XEvent event;
+
+    if(display == NULL)
+    {
+        fprintf(stderr, "Error!!!\n");
+        exit(EXIT_FAILURE);
+    }
+
+    event.type = ButtonPress;
+    event.xbutton.button = 1;   // left button
+    event.xbutton.same_screen = True;
+
+    XQueryPointer(display, RootWindow(display, DefaultScreen(display)), &event.xbutton.root, &event.xbutton.window, &event.xbutton.x_root, &event.xbutton.y_root, &event.xbutton.x, &event.xbutton.y, &event.xbutton.state);
+
+    event.xbutton.subwindow = event.xbutton.window;
+
+    while(event.xbutton.subwindow)
+    {
+        event.xbutton.window = event.xbutton.subwindow;
+
+        XQueryPointer(display, event.xbutton.window, &event.xbutton.root, &event.xbutton.subwindow, &event.xbutton.x_root, &event.xbutton.y_root, &event.xbutton.x, &event.xbutton.y, &event.xbutton.state);
+    }
+
+    if(XSendEvent(display, PointerWindow, True, 0xfff, &event) == 0) fprintf(stderr, "Error!!!\n");
+
+    XFlush(display);
+
+    usleep(10000);
+
+    event.type = ButtonRelease;
+    event.xbutton.state = 0x100;
+
+    if(XSendEvent(display, PointerWindow, True, 0xfff, &event) == 0) fprintf(stderr, "Error!!!\n");
+
+    XFlush(display);
+
+    XCloseDisplay(display);
+}
+
+/**
+ * dorightclick<br>
+ * do a real left click at current cursor position
+ */
+void realmouse::dorightclick() {
+    Display *display = XOpenDisplay(NULL);
+
+    XEvent event;
+
+    if(display == NULL)
+    {
+        fprintf(stderr, "Error!!!\n");
+        exit(EXIT_FAILURE);
+    }
+
+    event.type = ButtonPress;
+    event.xbutton.button = 3;   // right button
+    event.xbutton.same_screen = True;
+
+    XQueryPointer(display, RootWindow(display, DefaultScreen(display)), &event.xbutton.root, &event.xbutton.window, &event.xbutton.x_root, &event.xbutton.y_root, &event.xbutton.x, &event.xbutton.y, &event.xbutton.state);
+
+    event.xbutton.subwindow = event.xbutton.window;
+
+    while(event.xbutton.subwindow)
+    {
+        event.xbutton.window = event.xbutton.subwindow;
+
+        XQueryPointer(display, event.xbutton.window, &event.xbutton.root, &event.xbutton.subwindow, &event.xbutton.x_root, &event.xbutton.y_root, &event.xbutton.x, &event.xbutton.y, &event.xbutton.state);
+    }
+
+    if(XSendEvent(display, PointerWindow, True, 0xfff, &event) == 0) fprintf(stderr, "Error!!!\n");
+
+    XFlush(display);
+
+    usleep(10000);
+
+    event.type = ButtonRelease;
+    event.xbutton.state = 0x100;
+
+    if(XSendEvent(display, PointerWindow, True, 0xfff, &event) == 0) fprintf(stderr, "Error!!!\n");
+
+    XFlush(display);
+
+    XCloseDisplay(display);
+}
+
+/**
+ * doscrollup<br>
+ * do a real scroll down at current cursor position
+ */
+void realmouse::doscrollup() {
+    Display *display = XOpenDisplay(NULL);
+
+    XEvent event;
+
+    if(display == NULL)
+    {
+        fprintf(stderr, "Error!!!\n");
+        exit(EXIT_FAILURE);
+    }
+
+    event.type = ButtonPress;
+    event.xbutton.button = 4;   // up scroll
+    event.xbutton.same_screen = True;
+
+    XQueryPointer(display, RootWindow(display, DefaultScreen(display)), &event.xbutton.root, &event.xbutton.window, &event.xbutton.x_root, &event.xbutton.y_root, &event.xbutton.x, &event.xbutton.y, &event.xbutton.state);
+
+    event.xbutton.subwindow = event.xbutton.window;
+
+    while(event.xbutton.subwindow)
+    {
+        event.xbutton.window = event.xbutton.subwindow;
+
+        XQueryPointer(display, event.xbutton.window, &event.xbutton.root, &event.xbutton.subwindow, &event.xbutton.x_root, &event.xbutton.y_root, &event.xbutton.x, &event.xbutton.y, &event.xbutton.state);
+    }
+
+    if(XSendEvent(display, PointerWindow, True, 0xfff, &event) == 0) fprintf(stderr, "Error!!!\n");
+
+    XFlush(display);
+
+    usleep(10000);
+
+    event.type = ButtonRelease;
+    event.xbutton.state = 0x100;
+
+    if(XSendEvent(display, PointerWindow, True, 0xfff, &event) == 0) fprintf(stderr, "Error!!!\n");
+
+    XFlush(display);
+
+    XCloseDisplay(display);
+}
+
+/**
+ * doscrolldown<br>
+ * do a real scroll down at current cursor position
+ */
+void realmouse::doscrolldown() {
+    Display *display = XOpenDisplay(NULL);
+
+    XEvent event;
+
+    if(display == NULL)
+    {
+        fprintf(stderr, "Error!!!\n");
+        exit(EXIT_FAILURE);
+    }
+
+    event.type = ButtonPress;
+    event.xbutton.button = 5;   // down scroll
+    event.xbutton.same_screen = True;
+
+    XQueryPointer(display, RootWindow(display, DefaultScreen(display)), &event.xbutton.root, &event.xbutton.window, &event.xbutton.x_root, &event.xbutton.y_root, &event.xbutton.x, &event.xbutton.y, &event.xbutton.state);
+
+    event.xbutton.subwindow = event.xbutton.window;
+
+    while(event.xbutton.subwindow)
+    {
+        event.xbutton.window = event.xbutton.subwindow;
+
+        XQueryPointer(display, event.xbutton.window, &event.xbutton.root, &event.xbutton.subwindow, &event.xbutton.x_root, &event.xbutton.y_root, &event.xbutton.x, &event.xbutton.y, &event.xbutton.state);
+    }
+
+    if(XSendEvent(display, PointerWindow, True, 0xfff, &event) == 0) fprintf(stderr, "Error!!!\n");
+
+    XFlush(display);
+
+    usleep(10000);
+
+    event.type = ButtonRelease;
+    event.xbutton.state = 0x100;
+
+    if(XSendEvent(display, PointerWindow, True, 0xfff, &event) == 0) fprintf(stderr, "Error!!!\n");
+
+    XFlush(display);
+
+    XCloseDisplay(display);
 }
 #endif  // end linux
