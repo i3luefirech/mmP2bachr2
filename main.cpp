@@ -149,6 +149,7 @@ void *Thread(void *pVoid) {
  */
 int main()
 {
+    pthread_t *threads;
     int count = 0;
     // create realmouse object
     Mainmouse = new realmouse();
@@ -228,7 +229,7 @@ int main()
     Sleep(1000);
 #endif  // end windows
 #ifdef __linux__
-    pthread_create(reinterpret_cast<pthread_t *>(Thread), nullptr, Thread, (void *)0);
+    pthread_create(threads, nullptr, Thread, (void *)NULL);
 #endif  // end linux
     // free realmouse object
     free(Mainmouse);
